@@ -1,0 +1,59 @@
+/* 分页公共样式 */
+ul, li {
+  list-style: none;
+}
+
+.pagination-wrapper {
+  height: 60px;
+  line-height: 60px;
+  .page-sizes {
+    float: left;
+    font-size: 14px;
+  }
+  .pagination {
+    -moz-user-select:none;/*火狐*/
+    -webkit-user-select:none;/*webkit浏览器*/
+    -ms-user-select:none;/*IE10*/
+    -khtml-user-select:none;/*早期浏览器*/
+    user-select:none;
+    float: right;
+    font-size: 14px;
+    line-height: 20px;
+    div {
+      display: inline-block;
+      padding: 5px 10px;
+      border: 1px solid gray;
+      &:hover {
+        background: #4099Bf;
+        color: #fff;
+        cursor: pointer;
+      }
+    }
+    ul {
+      display: inline-block;
+      padding: 0 10px;
+      li {
+        padding: 5px 10px;
+        border: 1px solid gray;
+        display: inline-block;
+        &:hover {
+          background: #4099Bf;
+          color: #fff;
+          cursor: pointer;
+          &[isClick*="no"] {
+            cursor: text;
+          }
+        }
+        &[active*="yes"] {
+          background: #4099Bf;
+          color: #fff;
+        }
+      }
+    }
+    input {
+      padding: 5px 0;
+      width: 50px;
+      text-align: center;
+    }
+  }
+}
