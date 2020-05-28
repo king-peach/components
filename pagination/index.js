@@ -51,7 +51,7 @@
       pageSizeNode.className = 'page-sizes';
 
       if (/total/.test(layout)) {
-        var totalHtml = '<span class="total-wrapper">总共<span class="total">' + total + '</span>条</span>';
+        var totalHtml = '<span class="total-wrapper">总共<span class="total">' + total + '</span>条</span>, ';
         pageSizeNode.innerHTML += totalHtml;
       }
 
@@ -64,7 +64,7 @@
             options += '<option value="' + sizes[i] + '">' + sizes[i] + '</option>';
           }
         }
-        var sizesHtml = '<span class="sizes-wrapper">每页显示<select name="sizes" id="sizes-selector" value="' + pageSize + '">' + options + '</select>';
+        var sizesHtml = '<span class="sizes-wrapper">每页显示&nbsp;&nbsp;<select name="sizes" id="sizes-selector" value="' + pageSize + '">' + options + '</select>';
         pageSizeNode.innerHTML += sizesHtml;
       }
 
@@ -81,7 +81,7 @@
       }
 
       if (/pager/.test(layout)) {
-        var pages = total % pageSize > 0 ? (total / pageSize) + 1 : (total / pageSize);
+        var pages = total % pageSize > 0 ? parseInt(total / pageSize) + 1 : parseInt(total / pageSize);
         var lists = '';
         var len = pages > 7 ? 8 : pages + 1;
         for (var i = 1; i < len; i++) {
@@ -108,7 +108,7 @@
       }
 
       if (/jumper/.test(layout)) {
-        paginationNode.innerHTML += '&nbsp;&nbsp;<input value="' + currentPage + '" id="jumper">&nbsp;&nbsp;<div class="jumper">确定</div>';
+        paginationNode.innerHTML += '&nbsp;&nbsp;<input type="number" value="' + currentPage + '" id="jumper">&nbsp;&nbsp;<div class="jumper">确定</div>';
       }
 
       node.appendChild(pageSizeNode);
@@ -206,9 +206,10 @@
     if (node) {
       node.addEventListener('click', function() {
         var page = jumperNode.previousElementSibling.value
-        console.log(page)
-        callback && callback(page);
+        var pages = _total % _pageSize > 0 ? parseInt(_total / _pageSize) + 1 : parseInt(_total / _pageSize);
+        if (page < 1 && page > pages) return false;
         handleJumperPage(page);
+        callback && callback(page);
       }, false);
     }
   }
@@ -220,8 +221,10 @@
    */
   var bindPrevJumper = function(node, callback) {
     node.addEventListener('click', function() {
-      callback && callback(currentPage - 1);
+      console.log(currentPage);
+      if (currentPage === 1) return false;
       handleJumperPage(currentPage - 1);
+      callback && callback(currentPage - 1);
     }, false);
   }
 
@@ -232,8 +235,10 @@
    */
   var bindNextJumper = function(node, callback) {
     node.addEventListener('click', function() {
-      callback && callback(currentPage + 1);
+      var pages = _total % _pageSize > 0 ? parseInt(_total / _pageSize) + 1 : parseInt(_total / _pageSize);
+      if (currentPage === pages) return false;
       handleJumperPage(currentPage + 1);
+      callback && callback(currentPage + 1);
     }, false);
   }
 
@@ -245,8 +250,8 @@
   var bindGotoFirstEvent = function(node, callback) {
     if (node) {
       node.addEventListener('click', function() {
-        callback && callback();
         handleJumperPage(1);
+        callback && callback();
       }, false);
     }
   }
@@ -259,9 +264,9 @@
   var bindGotoLastEvent = function(node, callback) {
     if (node) {
       node.addEventListener('click', function() {
-        callback && callback();
-        var pages = _total % _pageSize > 0 ? (_total / _pageSize) + 1 : (_total / _pageSize);
+        var pages = _total % _pageSize > 0 ? parseInt(_total / _pageSize) + 1 : parseInt(_total / _pageSize);
         handleJumperPage(pages);
+        callback && callback();
       }, false);
     }
   }
@@ -275,7 +280,7 @@
 
     if (page < 1 || page > pages) return false;
 
-    var pages = _total % _pageSize > 0 ? (_total / _pageSize) + 1 : (_total / _pageSize);
+    var pages = _total % _pageSize > 0 ? parseInt(_total / _pageSize) + 1 : parseInt(_total / _pageSize);
     var list = document.querySelectorAll('.page');
 
     if (pages < 8) {
