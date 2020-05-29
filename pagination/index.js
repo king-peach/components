@@ -4,7 +4,7 @@
 
  var pagination = (function() {
 
-  var sizesModel, firstPageNode, pagerWrapper, _total, _pageSize, _layout, prevNode, lastPageNode, nextNode, jumperNode;
+  var sizesModel, firstPageNode, pagerWrapper, _currentPage, _total, _pageSize, _pages, _layout, prevNode, lastPageNode, nextNode, jumperNode;
 
   /**
    * @method 组件初始化
@@ -38,6 +38,8 @@
     _total = total;
     _pageSize = pageSize;
     _layout = layout;
+    _currentPage = currentPage;
+    _pages = total % pageSize > 0 ? parseInt(total / pageSize) + 1 : parseInt(total / pageSize);
 
     /**
      * @method 初始化组件模板
@@ -191,6 +193,7 @@
         var event = window.event || e;
         var target = event.target || event.srcElement;
         _pageSize = target.value;
+        _pages = _total % _pageSize > 0 ? parseInt(_total / _pageSize) + 1 : parseInt(_total / _pageSize);
         handleJumperPage(1);
         callback && callback(target);
       }, false)
@@ -205,9 +208,11 @@
   var bindCustomJumper = function(node, callback) {
     if (node) {
       node.addEventListener('click', function() {
-        var page = jumperNode.previousElementSibling.value
-        var pages = _total % _pageSize > 0 ? parseInt(_total / _pageSize) + 1 : parseInt(_total / _pageSize);
-        if (page < 1 && page > pages) return false;
+        var page = Number(jumperNode.previousElementSibling.value)
+        if (page < 1 || page > _pages) {
+          console.warn('该跳转页面不在当前页码范围内！');
+          return false;
+        };
         handleJumperPage(page);
         callback && callback(page);
       }, false);
@@ -221,10 +226,9 @@
    */
   var bindPrevJumper = function(node, callback) {
     node.addEventListener('click', function() {
-      console.log(currentPage);
-      if (currentPage === 1) return false;
-      handleJumperPage(currentPage - 1);
-      callback && callback(currentPage - 1);
+      if (_currentPage === 1) return false;
+      handleJumperPage(_currentPage - 1);
+      callback && callback(_currentPage - 1);
     }, false);
   }
 
@@ -235,10 +239,9 @@
    */
   var bindNextJumper = function(node, callback) {
     node.addEventListener('click', function() {
-      var pages = _total % _pageSize > 0 ? parseInt(_total / _pageSize) + 1 : parseInt(_total / _pageSize);
-      if (currentPage === pages) return false;
-      handleJumperPage(currentPage + 1);
-      callback && callback(currentPage + 1);
+      if (_currentPage === _pages) return false;
+      handleJumperPage(_currentPage + 1);
+      callback && callback(_currentPage + 1);
     }, false);
   }
 
@@ -264,9 +267,8 @@
   var bindGotoLastEvent = function(node, callback) {
     if (node) {
       node.addEventListener('click', function() {
-        var pages = _total % _pageSize > 0 ? parseInt(_total / _pageSize) + 1 : parseInt(_total / _pageSize);
-        handleJumperPage(pages);
-        callback && callback();
+        handleJumperPage(_pages);
+        callback && callback(_pages);
       }, false);
     }
   }
@@ -278,25 +280,24 @@
   var handleJumperPage = function(page) {
     if (typeof page !== 'number') page = Number(page);
 
-    if (page < 1 || page > pages) return false;
+    if (page < 1 || page > _pages) return false;
 
-    var pages = _total % _pageSize > 0 ? parseInt(_total / _pageSize) + 1 : parseInt(_total / _pageSize);
     var list = document.querySelectorAll('.page');
 
-    if (pages < 8) {
+    if (_pages < 8) {
       // 页码不超过7页时
-      for (var i = 0; i < pages; i++) {
+      for (var i = 0; i < _pages; i++) {
         list[i].setAttribute('active', 'no');
       }
       list[page + 1].setAttribute('active', 'yes');
     } else {
       // 超过7页时
       var temp = [];
-      if (pages - page < 5) {
+      if (_pages - page < 5) {
         // 当前页在页码前段时
         temp.push('...');
-        for (var i = 0; i < pages + 1; i++) {
-          if (i > pages - 6) {
+        for (var i = 0; i < _pages + 1; i++) {
+          if (i > _pages - 6) {
             temp.push(i);
           }
         }
@@ -308,7 +309,7 @@
         temp.push('...');
       } else {
         // 当前页码在中间时
-        temp = [1, '...', page -1, page, page + 1, '...', pages];
+        temp = [1, '...', page -1, page, page + 1, '...', _pages];
       }
 
       // 处理pager
@@ -321,14 +322,15 @@
         var isClickVal = temp[i] === '...' ? 'no' : 'yes';
         list[i].setAttribute('isClick', isClickVal);
       }
+
     }
+    
+    _currentPage = page;
 
     // 如果存在输入框，则赋值输入框
     if (_layout && /jumper/.test(_layout)) {
       document.querySelector('#jumper').value = page;
     }
-
-    currentPage = page;
   }
 
   return {
