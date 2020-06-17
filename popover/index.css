@@ -1,0 +1,24 @@
+/* popover style */
+#popover { min-width: 100px; min-height: 30px; position: absolute; padding: 20px; border: 1px solid #ddd; color: #333; background-color: #fff; background-clip: padding-box; -webkit-box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1); box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1); }
+
+#popover .popover-arrow { display: block; position: absolute; background: #fff; width: 10px; height: 10px; border: 1px solid transparent; }
+
+#popover .popover-arrow.top { left: 50%; border-top-color: #ddd; border-left-color: #ddd; -webkit-transform: translateX(-50%) rotate(45deg); transform: translateX(-50%) rotate(45deg); top: -6px; -webkit-box-shadow: -1px -1px 1px rgba(0, 0, 0, 0.06); box-shadow: -1px -1px 1px rgba(0, 0, 0, 0.06); }
+
+#popover .popover-arrow.bottom { left: 50%; border-bottom-color: #ddd; border-right-color: #ddd; -webkit-transform: translateX(-50%) rotate(45deg); transform: translateX(-50%) rotate(45deg); bottom: -6px; -webkit-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.06); box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.06); }
+
+#popover .popover-wrapper .title { margin-bottom: 20px; }
+
+#popover .popover-wrapper .slot-scope { margin-left: 10px; }
+
+#popover .popover-wrapper .footer { margin-top: 30px; text-align: left; }
+
+#popover .popover-wrapper .footer div { display: inline-block; font-size: 12px; white-space: nowrap; height: 25px; line-height: 25px; padding: 0 15px; border: 1px solid transparent; outline: none; cursor: pointer; }
+
+#popover .popover-wrapper .footer div:not(:first-child) { margin-left: 10px; }
+
+#popover .popover-wrapper .footer div.comfirm-btn { color: #fff; background: #333; }
+
+#popover .popover-wrapper .footer div.cancel-btn { color: #333; background: #fff; border-color: #333; }
+
+#popover .popover-wrapper .footer div.cancel-btn:hover { color: #fff; background: #333; }

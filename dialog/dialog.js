@@ -4,20 +4,21 @@
 
 var dialog = (function() {
   // 节点类型
-  var element, dialog, comfirmBtn, cancelBtn;
+  var element, dialog, comfirmBtn, cancelBtn, closeIcon;
 
   /**
-   * @method getNeedElement 获取所需节点 
+   * @method getNeedElement 获取所需节点
    */
   var getNeedElement = function() {
     element = document.querySelector('.dialog-wrapper');
     dialog = document.querySelector('.dialog');
     cancelBtn = document.querySelector('.cancel-btn');
     comfirmBtn = document.querySelector('.comfirm-btn');
+    closeIcon = element.querySelector('.dialog_close_icon');
   }
 
   /**
-   * @method init 初始化dialog组件
+   * @method show 显示dialog组件
    * @param {Object} options 设置参数(title, content, btns, comfirm, cancel, shadeClose) 
    * @paramMap title 标题
    * @paramMap content dialog插值，innerHTML和innerText皆可
@@ -26,7 +27,7 @@ var dialog = (function() {
    * @paramMap cancel 取消按钮回调
    * @paramMap shadeClose 是否开启点击关闭遮罩
    */
-  var init = function(options = {}) {
+  var show = function(options = {}) {
     // 默认参数
     var {
       title = '',
@@ -34,7 +35,10 @@ var dialog = (function() {
       btns = ['取消', '确定'],
       comfirm = null,
       cancel = null,
-      shadeClose = true
+      shadeClose = true,
+      width = null,
+      height = null,
+      center = false
     } = options;
 
     // 生成按钮
@@ -48,21 +52,22 @@ var dialog = (function() {
     }
 
     // 最终生成的html
-    var html = '<div class="dialog-wrapper">' +
-              '<div class="dialog">' +
-                '<div class="dialog-title">' +
-                  '<span>' + title + '</span>' +
-                  '<button class="dialog_close_icon"></button>' +
-                '</div>' +
-                '<div class="dialog-content">' + content + '</div>' +
-                '<div class="dialog-footer">' +
-                  '<span class="dialog-footer-right">' + btnTemp + '</span>' +
-                '</div>' +
-              '</div>' +
-            '</div>';
+    var html = '<div class="dialog slideDown" style="' + (!width ? '' : 'width: ' + width + ';') + (!height ? '' : 'height:' + height + ';') + '">' +
+                  '<div class="dialog-title" ' + (center ? 'style="text-align: center";' : '') + '>' +
+                    '<span>' + title + '</span>' +
+                    '<button class="dialog_close_icon"></button>' +
+                  '</div>' +
+                  '<div class="dialog-content">' + content + '</div>' +
+                  '<div class="dialog-footer '+ (center ? 'center' : '') + '">' +
+                    '<span class="dialog-footer-right">' + btnTemp + '</span>' +
+                  '</div>' +
+                '</div>';
   
     // 添加到body
-    document.body.innerHTML += html;
+    var div = document.createElement('div');
+    div.innerHTML = html;
+    div.className = 'dialog-wrapper fadeIn';
+    document.body.append(div);
 
     // 获取所需节点
     getNeedElement();
@@ -101,6 +106,12 @@ var dialog = (function() {
         }
       }, false)
     }
+
+    // 点击关闭按钮
+    closeIcon && closeIcon.addEventListener('click', function() {
+      hide();
+      cancel && cancel();
+    }, false);
   }
 
   /**
@@ -108,42 +119,17 @@ var dialog = (function() {
    */
   var hide = function() {
     var timer = setTimeout(function() {
-      element.style.display = 'none';
+      element.remove();
       clearTimeout(timer);
-    });
-    dialog.className.replace(/slideDown/g, 'slideUp');
-    element.className = element.className.replace(/fadeIn/g, 'fadeOut');
-  }
-
-  /**
-   * @method 显示dialog
-   */
-  var show = function() {
-    element.style.display = 'flex';
-    element.className.indexOf('fadeOut') > -1 ? element.className = element.className.replace(/fadeOut/g, 'fadeIn') : element.classList.add('fadeIn');
-    dialog.className.indexOf('slideUp') > -1 ? dialog.className.replace(/slideUp/g, 'slideDown') : dialog.classList.add('slideDown');
-  }
-
-  /**
-   * @method replaceContent 替换dialog内容
-   * @param {HTML} html 自定义内容
-   */
-  var replaceContent = function(html) {
-    var content = document.querySelector('.dialog-content');
-
-    if (!content) {
-      console.log('请先初始化dialog组件');
-      return false;
-    }
-
-    content.innerHTML = html;
+    }, 200);
+    
+    element.classList.add('fadeOut');
+    dialog.classList.add('slideUp');
   }
 
   return {
-    init,
     show,
-    hide,
-    replaceContent
+    hide
   }
 
 })();

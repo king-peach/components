@@ -4,7 +4,7 @@
 
  var pagination = (function() {
 
-  var sizesModel, firstPageNode, pagerWrapper, _currentPage, _total, _pageSize, _pages, _layout, prevNode, lastPageNode, nextNode, jumperNode;
+  var rootNode, sizesModel, firstPageNode, pagerWrapper, _currentPage, _total, _pageSize, _pages, _layout, prevNode, lastPageNode, nextNode, jumperNode;
 
   /**
    * @method 组件初始化
@@ -13,6 +13,7 @@
   var init = function(options) {
 
     // 默认参数
+    /** @String wrapper 分页器挂载节点class/id */
     /** @callback sizeChange size改变回调 */
     /** @callback gotoFirst 跳转到首页回调 */
     /** @callback handlePagerJumper 页码跳转回调 */
@@ -21,6 +22,7 @@
     /** @callback gotoLast 跳转到首页回调 */
     /** @callback handleCustomJumper 跳转到指定页回调 */
     var {
+      wrapper = null,
       total = 0,
       sizes = [5, 10, 20, 30, 40, 50, 100],
       pageSize = 10,
@@ -116,7 +118,14 @@
       node.appendChild(pageSizeNode);
       node.appendChild(paginationNode);
 
-      document.body.appendChild(node);
+      // 初始化分页器挂载元素
+      if (document.querySelector(wrapper)) {
+        rootNode = document.querySelector(wrapper);
+      } else {
+        rootNode = document.body || document.documentElement;
+      };
+
+      rootNode.appendChild(node);
 
       return node;
     };
@@ -221,7 +230,7 @@
 
   /**
    * @method bindPrevJumper 绑定跳转到上一页回调
-   * @param {Element} node 绑定事件节点
+   * @param {Element} node 绑定
    * @param {Func} callback 绑定回调函数
    */
   var bindPrevJumper = function(node, callback) {
