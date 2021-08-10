@@ -6,7 +6,7 @@ ul, li { list-style: none; }
 
 .pagination-wrapper .page-sizes { float: left; font-size: 14px; }
 
-.pagination-wrapper .pagination { -moz-user-select: none; /*火狐*/ -webkit-user-select: none; /*webkit浏览器*/ -ms-user-select: none; /*IE10*/ /*早期浏览器*/ user-select: none; float: right; font-size: 14px; line-height: 20px; }
+.pagination-wrapper .pagination { -moz-user-select: none; /*火狐*/ -webkit-user-select: none; /*webkit浏览器*/ -ms-user-select: none; /*IE10*/ /*早期浏览器*/ user-select: none; float: right; font-size: 14px; line-height: 20px; margin-top: 14px; }
 
 .pagination-wrapper .pagination div { display: inline-block; padding: 5px 10px; border: 1px solid gray; }
 
